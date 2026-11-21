@@ -62,6 +62,10 @@ CSS = """<style>
 .match td.win{color:#17694A;font-weight:700}
 .verdict{margin:12px 2px 0;color:#14213D;font-size:.92rem}
 .fine{color:#5B6B80;font-size:.84rem;margin-top:14px}
+.qrow td:nth-child(2){width:42%}
+.qbar{height:10px;background:#E3E9F0;border-radius:5px}
+.qbar span{display:block;height:100%;background:#B4560B;border-radius:5px}
+.qmiss{color:#5B6B80;font-size:.82rem;text-align:left!important}
 @media(max-width:760px){.stats{grid-template-columns:1fr}.slip-row{grid-template-columns:1fr;gap:2px}}
 </style>"""
 
@@ -115,7 +119,7 @@ if is_demo:
     st.markdown('<div class="demo-note">Demo mode. These referrals are fictional, generated to show how the '
                 'screen works. Nothing here is a real case or a measured result.</div>', unsafe_allow_html=True)
 
-review_tab, results_tab = st.tabs(["Review queue", "Results"])
+review_tab, results_tab, quality_tab = st.tabs(["Review queue", "Results", "Intake quality"])
 
 
 def slip_html(row, flags) -> str:
@@ -234,3 +238,41 @@ with results_tab:
         'Products with one vendor are easy for both, so the multi-vendor row shows the real routing decisions.'
         + (' These figures come from fictional demo data and are not results.' if is_demo else '') + '</p>',
         unsafe_allow_html=True)
+
+with quality_tab:
+    quality_file = ROOT / "output" / "quality.json"
+    if not quality_file.exists():
+        st.info("Run python scripts/quality_report.py to check the full referral export.")
+    else:
+        q = json.loads(quality_file.read_text(encoding="utf-8"))
+        top_field, top_n = max(q["by_field"].items(), key=lambda kv: kv[1])
+        st.markdown(
+            '<div class="stats">'
+            f'<div class="stat"><b>{q["referrals"]:,}</b><span>referrals checked against the intake rules</span></div>'
+            f'<div class="stat"><b>{q["with_problem"]:,}</b><span>had a missing or invalid detail '
+            f'({round(100 * q["with_problem"] / q["referrals"])}%), all flagged before routing</span></div>'
+            f'<div class="stat"><b>{top_n:,}</b><span>most common problem: {escape(top_field.lower())}</span></div>'
+            '</div>', unsafe_allow_html=True)
+
+        def worst(fields):
+            name, n = max(fields.items(), key=lambda kv: kv[1])
+            return f"mostly {name.lower()}" if n else ""
+
+        body = "".join(
+            f'<tr class="qrow"><td>{escape(g["service_type"])}</td>'
+            f'<td><div class="qbar"><span style="width:{100 * g["with_problem"] / g["referrals"]:.0f}%"></span></div></td>'
+            f'<td>{g["with_problem"]} of {g["referrals"]}</td>'
+            f'<td>{round(100 * g["with_problem"] / g["referrals"])}%</td>'
+            f'<td class="qmiss">{escape(worst(g["fields"]))}</td></tr>'
+            for g in q["by_service_type"])
+        fields = "".join(f"<tr><td>{escape(label)}</td><td>{n:,}</td></tr>" for label, n in q["by_field"].items())
+        st.markdown(
+            '<p class="panel-title">Referrals with a problem, by type of service</p><div class="card">'
+            '<table class="match"><thead><tr><th>Type of service</th><th></th><th>Referrals</th><th>Rate</th>'
+            f'<th style="text-align:left">Main issue</th></tr></thead><tbody>{body}</tbody></table></div>'
+            '<p class="panel-title" style="margin-top:22px">What was missing or invalid</p><div class="card">'
+            f'<table class="match"><thead><tr><th>Problem</th><th>Referrals</th></tr></thead><tbody>{fields}</tbody>'
+            '</table></div>'
+            f'<p class="fine">A referral can have more than one problem. {q["privacy_blanked"]} values were removed by '
+            'the privacy filter and are not counted as missing. Service types with fewer than 20 referrals are '
+            'combined. Totals only; no individual referral is shown.</p>', unsafe_allow_html=True)

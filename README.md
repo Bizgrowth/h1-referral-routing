@@ -23,10 +23,10 @@ Durable medical equipment and supply referrals pile up. Required details go miss
 - **Honest measurement.** Suggestions are learned from earlier years and scored only on a later year, always next to a simple "most common vendor for this product" baseline.
 
 ## Results
-Tested on 20 de-identified referrals from my own company's records, learning from 54 earlier referrals. Totals only; nothing here is estimated.
-- **Missing information caught:** 2 of 20 referrals had a missing or invalid required item, and both were flagged before routing.
+Tested on de-identified referrals from my own company's records. Totals only; nothing here is estimated.
+- **Intake quality:** 1,091 of 2,836 referrals (38%) had a missing or invalid detail, all flagged before routing. Problems cluster by type of service: nursing 73%, respiratory 45%, DME 44%, down to hearing aids at 8%. The most common gap was no referral source (770 referrals).
 - **Vendor shortlist:** the vendor actually used was in the 3 suggestions for 10 of 18 scored referrals, compared with 7 of 18 for the simple rule "use the most common vendor for this product".
-- **Review time per referral, before vs. with the tool:** being measured; added once timed.
+- **Review time per referral:** 2.75 minutes by hand today; time with the tool is being measured.
 
 ## What a client gets
 - Setup on the client's own export and routing rules

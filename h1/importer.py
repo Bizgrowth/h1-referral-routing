@@ -43,8 +43,8 @@ def _is_excel(path: Path) -> bool:
     return path.suffix.lower() in (".xlsx", ".xls")
 
 
-def _read(path: Path, header_only: bool) -> pd.DataFrame:
-    keep = None if header_only else (lambda c: c in ALLOWED)
+def _read(path: Path, header_only: bool, allowed=ALLOWED) -> pd.DataFrame:
+    keep = None if header_only else (lambda c: c in allowed)
     nrows = 0 if header_only else None
     if _is_excel(path):
         return pd.read_excel(path, sheet_name="Sheet1", dtype=object, usecols=keep, nrows=nrows)
