@@ -21,7 +21,9 @@ git config core.hooksPath .githooks              # once per clone: blocks data f
 
 ## Current Status
 MVP built 2026-11-21; 60 tests pass; checked end to end on synthetic fixtures only.
-**Real data not loaded yet — Daniel must approve before `data/Referrals.xlsx` is used.**
+Real export loaded 2026-11-21 (74 rows, `data/Referrals.xlsx`, gitignored). Manual baseline: **165 s** per referral
+(2.75 min, given by Daniel). Review time with the tool: not yet logged. Run totals with `--baseline-seconds 165`.
+Public totals need the data owner's written OK before pushing.
 Plan and assumptions: `docs/plans/2026-11-20-h1-build-plan.md`. Spec: `docs/plans/claude-code-build-brief.md`.
 Missing: `docs/01-cover.png` and `docs/04-workflow.png` (not in this folder yet).
 
