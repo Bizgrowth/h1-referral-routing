@@ -23,13 +23,10 @@ Durable medical equipment and supply referrals pile up. Required details go miss
 - **Honest measurement.** Suggestions are learned from earlier years and scored only on a later year, always next to a simple "most common vendor for this product" baseline.
 
 ## Results
-*Placeholder: results will be added once measured. Nothing here is estimated.*
-
-Tested on N de-identified referrals from my own company's records:
-1. Referrals scored: —
-2. Review time per referral, before vs with the tool: —
-3. Missing information caught: —
-4. Top-vendor match vs the coordinator's choice, next to the baseline: —
+Tested on 20 de-identified referrals from my own company's records, learning from 54 earlier referrals. Totals only; nothing here is estimated.
+- **Missing information caught:** 2 of 20 referrals had a missing or invalid required item, and both were flagged before routing.
+- **Vendor shortlist:** the vendor actually used was in the 3 suggestions for 10 of 18 scored referrals, compared with 7 of 18 for the simple rule "use the most common vendor for this product".
+- **Review time per referral, before vs. with the tool:** being measured; added once timed.
 
 ## What a client gets
 - Setup on the client's own export and routing rules
