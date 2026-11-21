@@ -1,0 +1,29 @@
+# Referral data — must never be committed (public repo)
+data/
+output/
+logs/
+*.csv
+*.xlsx
+*.accdb
+*.mdb
+*.db
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Streamlit local secrets (config.toml stays committed)
+.streamlit/secrets.toml
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
