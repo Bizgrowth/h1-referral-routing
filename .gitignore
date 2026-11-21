@@ -7,6 +7,9 @@ logs/
 *.accdb
 *.mdb
 *.db
+# Extra safety: other spreadsheet / export formats
+*.xls
+*.tsv
 
 # Secrets
 .env

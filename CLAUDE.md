@@ -10,10 +10,20 @@
 A local-only MVP that takes de-identified workers' comp DME and supply referrals, flags missing information, suggests up to 3 vendors with reasons, and has a coordinator approve every match.
 
 ## How to Run
-[placeholder — fill in after first build]
+```
+python -m venv .venv && .venv\Scripts\python -m pip install -r requirements.txt
+git config core.hooksPath .githooks              # once per clone: blocks data files from commits
+.venv\Scripts\python -m pytest                   # all tests
+.venv\Scripts\python scripts\score.py            # reads data\Referrals.xlsx -> output\scoring.json
+.venv\Scripts\streamlit run app.py               # coordinator screen at http://localhost:8501
+.venv\Scripts\python scripts\totals.py --baseline-seconds <manual median>
+```
 
 ## Current Status
-Planning — not started. The full spec is in `docs/plans/claude-code-build-brief.md`.
+MVP built 2026-11-21; 60 tests pass; checked end to end on synthetic fixtures only.
+**Real data not loaded yet — Daniel must approve before `data/Referrals.xlsx` is used.**
+Plan and assumptions: `docs/plans/2026-11-20-h1-build-plan.md`. Spec: `docs/plans/claude-code-build-brief.md`.
+Missing: `docs/01-cover.png` and `docs/04-workflow.png` (not in this folder yet).
 
 ## Key Docs
 - `docs/plans/claude-code-build-brief.md`: the build spec, with hard rules, tests and "done means"

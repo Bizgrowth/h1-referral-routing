@@ -1,0 +1,3 @@
+#!/bin/sh
+# Blocks referral data from commits. Enable once per clone: git config core.hooksPath .githooks
+exec python scripts/check_no_data.py
