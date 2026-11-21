@@ -31,6 +31,7 @@ FEATURES = sorted({f for fields, _ in LEVELS for f in fields})
 class Suggestion:
     vendor: str
     reason: str
+    count: int = 0
 
 
 def _key(row, fields):
@@ -69,7 +70,7 @@ class Suggester:
                 continue
             for vendor, n in sorted(counts.items(), key=lambda kv: (-kv[1], -product[kv[0]], kv[0])):
                 if vendor not in {s.vendor for s in picked}:
-                    picked.append(Suggestion(vendor, f"Used for this {label} {n} time{'s' if n != 1 else ''}"))
+                    picked.append(Suggestion(vendor, f"Used for this {label} {n} time{'s' if n != 1 else ''}", n))
                 if len(picked) == k:
                     return picked
         return picked
