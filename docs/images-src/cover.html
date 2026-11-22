@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>H1 cover</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1600px;height:1200px;overflow:hidden}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:#EDF1F5;color:#14213D;padding:96px 104px;display:flex;flex-direction:column}
+.tag{display:inline-block;font-size:22px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#17694A;background:#DCEDE5;padding:10px 20px;border-radius:999px;align-self:flex-start}
+h1{font-size:96px;line-height:1.02;font-weight:800;letter-spacing:-.02em;margin-top:40px}
+.sub{font-size:36px;line-height:1.35;color:#3D4A66;margin-top:28px;max-width:1250px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:auto}
+.card{background:#fff;border-radius:24px;padding:44px 40px;box-shadow:0 2px 0 rgba(20,33,61,.06),0 18px 40px -24px rgba(20,33,61,.25)}
+.big{font-size:84px;font-weight:800;color:#17694A;line-height:1}
+.big small{font-size:40px;font-weight:700;color:#14213D}
+.lbl{font-size:27px;line-height:1.35;margin-top:18px;color:#14213D}
+.note{font-size:21px;color:#5B6680;margin-top:12px}
+.foot{display:flex;justify-content:space-between;font-size:22px;color:#5B6680;margin-top:44px}
+</style></head><body>
+<span class="tag">Workers' comp · DME &amp; supplies</span>
+<h1>Referral intake<br>&amp; vendor routing</h1>
+<p class="sub">Flags missing details before a case stalls, suggests up to 3 vendors with reasons, and a coordinator approves every match.</p>
+<div class="stats">
+  <div class="card"><div class="big">38%</div><div class="lbl">of referrals had a missing or invalid detail, all flagged</div><div class="note">1,091 of 2,836 checked</div></div>
+  <div class="card"><div class="big">10 <small>vs 7</small></div><div class="lbl">right vendor in the top 3 suggestions, vs the usual rule</div><div class="note">of 18 scored referrals</div></div>
+  <div class="card"><div class="big">100%</div><div class="lbl">local. No cloud AI, no tracking, identifiers dropped</div><div class="note">a person approves every match</div></div>
+</div>
+<div class="foot"><span>Python · pandas · Streamlit · pytest</span><span>Measured totals only, from de-identified records</span></div>
+</body></html>

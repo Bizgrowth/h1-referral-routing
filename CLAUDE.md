@@ -27,7 +27,7 @@ Public totals need the data owner's written OK before pushing.
 Full export (2,836 rows, 8 columns, no year) at `data/Referrals-v3.xlsx`: run `scripts\quality_report.py` for the
 intake-quality totals by type of service (app tab "Intake quality"). `Referrals-v2-filtered.xlsx` is a filtered subset; unused.
 Plan and assumptions: `docs/plans/2026-11-20-h1-build-plan.md`. Spec: `docs/plans/claude-code-build-brief.md`.
-Missing: `docs/01-cover.png` and `docs/04-workflow.png` (not in this folder yet).
+Portfolio images: `docs/01-cover.png`, `docs/04-workflow.png` (sources in `docs/images-src/`; re-render with headless Edge at 1600x1200).
 
 ## Key Docs
 - `docs/plans/claude-code-build-brief.md`: the build spec, with hard rules, tests and "done means"

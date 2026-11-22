@@ -13,7 +13,7 @@ Equipment and supply referrals arrive with gaps. Coordinators chase missing deta
 - **Coordinator approval screen:** Approve, Change vendor or Reject. Nothing is assigned without a person, and every decision is logged with the time it took.
 - **Reporting:** a four-totals report built from the decision log. No individual records ever leave the machine.
 
-[Diagram: 04-workflow.png]
+![How a referral moves through it](04-workflow.png)
 
 ## Rules and safeguards
 - **Local only:** runs on the client's own computer, with no cloud AI, no tracking and no hosted database. A test fails the build if any code tries to reach the internet.

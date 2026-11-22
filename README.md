@@ -1,4 +1,4 @@
-<!-- Cover image goes here once added: ![Cover](docs/01-cover.png) -->
+![Cover](docs/01-cover.png)
 
 # H1 Referral Routing
 
@@ -8,7 +8,7 @@
 Durable medical equipment and supply referrals pile up. Required details go missing and stall cases, and coordinators pick vendors from memory or spreadsheets. Each delay pushes back care for the injured worker.
 
 ## How it works
-<!-- Workflow diagram goes here once added: ![Workflow](docs/04-workflow.png) -->
+![Workflow](docs/04-workflow.png)
 1. Reads one de-identified referral from a spreadsheet export.
 2. Extracts and cleans only the allowed fields.
 3. Flags missing or invalid required information before routing.

@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>H1 workflow</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1600px;height:1200px;overflow:hidden}
+body{font-family:"Segoe UI",system-ui,sans-serif;background:#EDF1F5;color:#14213D;padding:64px 104px}
+h1{font-size:60px;font-weight:800;letter-spacing:-.015em}
+.sub{font-size:28px;color:#3D4A66;margin-top:14px}
+.flow{margin-top:40px;display:flex;flex-direction:column;gap:14px}
+.step{display:grid;grid-template-columns:76px 1fr 330px;align-items:center;gap:32px;background:#fff;border-radius:20px;padding:20px 36px;box-shadow:0 14px 32px -24px rgba(20,33,61,.3)}
+.n{width:64px;height:64px;border-radius:50%;background:#17694A;color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.t{font-size:31px;font-weight:700}
+.d{font-size:23px;color:#4A5670;margin-top:4px;line-height:1.35}
+.chip{justify-self:end;font-size:21px;font-weight:600;padding:10px 18px;border-radius:12px;background:#EDF1F5;color:#3D4A66;text-align:center}
+.chip.warn{background:#FCEFD6;color:#8A5A00}
+.chip.ok{background:#DCEDE5;color:#17694A}
+.step.person{outline:3px solid #17694A}
+.foot{margin-top:26px;font-size:22px;color:#5B6680;display:flex;gap:28px}
+.foot b{color:#17694A}
+</style></head><body>
+<h1>How a referral moves through it</h1>
+<p class="sub">Everything runs on the client's own computer. Nothing is assigned without a person.</p>
+<div class="flow">
+  <div class="step"><div class="n">1</div><div><div class="t">Read the referral export</div><div class="d">The spreadsheet the team already uses. No new system to fill in.</div></div><div class="chip">Spreadsheet in</div></div>
+  <div class="step"><div class="n">2</div><div><div class="t">Keep only approved fields</div><div class="d">11 allowed columns. Patient, claim and contact columns are dropped; SSN, phone, email and ZIP values blanked.</div></div><div class="chip ok">Privacy filter</div></div>
+  <div class="step"><div class="n">3</div><div><div class="t">Flag missing or invalid details</div><div class="d">Referral source, product, service type, HCPCS code, quantity, carrier city.</div></div><div class="chip warn">Caught before routing</div></div>
+  <div class="step"><div class="n">4</div><div><div class="t">Suggest up to 3 vendors</div><div class="d">Ranked from the company's own past referrals, each with a plain reason.</div></div><div class="chip">"Used 4× in this city"</div></div>
+  <div class="step person"><div class="n">5</div><div><div class="t">Coordinator decides</div><div class="d">Approve, change vendor or reject. Each decision is logged with the time it took.</div></div><div class="chip ok">Human approval</div></div>
+  <div class="step"><div class="n">6</div><div><div class="t">Report four totals</div><div class="d">Missing-info rate, shortlist accuracy, review time, and the baseline. Never individual records.</div></div><div class="chip">Totals out</div></div>
+</div>
+<div class="foot"><span><b>No</b> cloud AI</span><span><b>No</b> tracking</span><span><b>No</b> hosted database</span><span><b>No</b> data in the code repository</span></div>
+</body></html>
