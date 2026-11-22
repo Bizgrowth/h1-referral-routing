@@ -1,6 +1,6 @@
 """Intake quality report: missing or invalid details, by type of service. Totals only.
 
-Usage: python scripts/quality_report.py [--input data/Referrals-v3.xlsx]
+Usage: python scripts/quality_report.py [--input data/Referrals-v4.xlsx]
 Saves output/quality.json (gitignored) for the app's Intake quality tab.
 """
 
@@ -12,7 +12,7 @@ import sys
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from h1 import quality  # noqa: E402
+from h1 import importer, quality  # noqa: E402
 
 
 def pct(part, whole):
@@ -34,7 +34,7 @@ def render(r) -> str:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=ROOT / "data" / "Referrals-v3.xlsx")
+    parser.add_argument("--input", type=Path, default=importer.default_input(ROOT / "data"))
     parser.add_argument("--output", type=Path, default=ROOT / "output" / "quality.json")
     args = parser.parse_args(argv)
     if not args.input.exists():

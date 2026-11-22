@@ -1,6 +1,6 @@
 """Abstract code fixtures only (PRODUCT_A, E0000, VENDOR_X). Never real referrals; never used for results.
 
-Files are written to pytest's temp folder, never into the repo.
+Rows use the same columns as data/Referrals-v4.xlsx. Files are written to pytest's temp folder, never into the repo.
 """
 
 import pandas as pd
@@ -11,25 +11,23 @@ FORBIDDEN_COLUMNS = {"patient_name": "PATIENT_SECRET", "patient_city": "PCITY_SE
                      "zip": "ZIP_SECRET", "DOB": "DOB_SECRET", "claim_number": "CLAIM_SECRET"}
 
 
-def row(year, product, group, hcpcs, vendor, city="CITY_A", source="SRC_1", qty="1", d2="", d4=""):
-    base = {"insurance_company_city": city, "referral_source": source, "Expr1002": product,
-            "product_group": group, "quantity": qty, "vendor_name": vendor, "hcpcs_code": hcpcs,
-            "DATE": year, "diag_code_2": d2, "diag_code_4": d4, "product_description": product,
+def row(year, product, group, hcpcs, vendor, state="ST_A", source="SRC_1", diag=""):
+    base = {"hcpcs_code": hcpcs, "vendor_name": vendor, "product_description": product, "product_group": group,
+            "referral_source": source, "patient_state": state, "diag_code_1": diag, "date of referral": year,
             "notes": "NOTE_SECRET"}
     return {**base, **FORBIDDEN_COLUMNS}
 
 
 def sample_rows():
     train = (
-        [row(2024, "PRODUCT_A", "GROUP_1", "E0000", "VENDOR_X")] * 2
-        + [row(2025, "PRODUCT_A", "GROUP_1", "E0000", "VENDOR_X")] * 2
-        + [row(2024, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Y", city="CITY_A")] * 3
-        + [row(2025, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Z", city="CITY_B")] * 2
+        [row(2025, "PRODUCT_A", "GROUP_1", "E0000", "VENDOR_X")] * 4
+        + [row(2025, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Y", state="ST_A")] * 3
+        + [row(2025, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Z", state="ST_B")] * 2
     )
     test = [
         row(2026, "PRODUCT_A", "GROUP_1", "E0000", "VENDOR_X"),
-        row(2026, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Z", city="CITY_B"),
-        row(2026, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Y", city="CITY_A"),
+        row(2026, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Z", state="ST_B"),
+        row(2026, "PRODUCT_B", "GROUP_2", "E0001", "VENDOR_Y", state="ST_A"),
         row(2026, "PRODUCT_C", "GROUP_1", "E0000", "VENDOR_X"),          # product never seen in training
         row(2026, "PRODUCT_A", "GROUP_1", "E0000", ""),                  # no answer key
         row(2026, "PRODUCT_A", "GROUP_1", "X12", "VENDOR_X"),            # bad HCPCS
@@ -49,4 +47,4 @@ def write_tsv(rows, path):
 
 @pytest.fixture
 def xlsx_path(tmp_path):
-    return write_xlsx(sample_rows(), tmp_path / "Referrals.xlsx")
+    return write_xlsx(sample_rows(), tmp_path / "Referrals-v4.xlsx")

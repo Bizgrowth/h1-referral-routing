@@ -1,27 +1,26 @@
 """Rank vendors from local history. No outside AI.
 
 The product settles the vendor for most rows, so every product-level vendor is a candidate.
-More specific contexts (city, source, HCPCS, diagnosis codes) only reorder vendors when they
-have enough history. When the product was never seen, back off to HCPCS + product group,
-then product group alone. The answer key (answer_vendor) is never an input feature.
+More specific contexts (state, source, HCPCS, diagnosis code) only reorder vendors when they
+have enough history. When the product was never seen, back off to HCPCS + service type,
+then service type alone. The answer key (answer_vendor) is never an input feature.
 """
 
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 
 MIN_SUPPORT = 2  # rows a specific context needs before it can reorder vendors
-DIAG = ("diag_code_2", "diag_code_4")
+DIAG = ("diag_code_1",)
 LEVELS = [
-    (("product_description", "hcpcs_code", "product_group", *DIAG, "referral_source", "insurance_company_city"),
-     "product, HCPCS code, diagnosis codes, referral source and carrier city"),
-    (("product_description", "referral_source", "insurance_company_city"),
-     "product from this referral source and carrier city"),
-    (("product_description", "insurance_company_city"), "product in this carrier city"),
+    (("product_description", "hcpcs_code", "product_group", *DIAG, "referral_source", "patient_state"),
+     "product, HCPCS code, diagnosis code, referral source and state"),
+    (("product_description", "referral_source", "patient_state"), "product from this referral source and state"),
+    (("product_description", "patient_state"), "product in this state"),
     (("product_description", "referral_source"), "product from this referral source"),
     (("product_description", "hcpcs_code"), "product and HCPCS code"),
     (("product_description",), "product"),
-    (("hcpcs_code", "product_group"), "HCPCS code in this product group"),
-    (("product_group",), "product group"),
+    (("hcpcs_code", "product_group"), "HCPCS code in this service type"),
+    (("product_group",), "service type"),
 ]
 PRODUCT_LEVEL = 5
 FEATURES = sorted({f for fields, _ in LEVELS for f in fields})

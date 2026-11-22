@@ -1,6 +1,6 @@
 """Run the scoring pass and save aggregate counts to output/scoring.json.
 
-Usage: python scripts/score.py [--input data/Referrals.xlsx]
+Usage: python scripts/score.py [--input data/Referrals-v4.xlsx]
 """
 
 import argparse

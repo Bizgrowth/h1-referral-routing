@@ -10,9 +10,16 @@ def make(rows, path):
 
 
 def ref(group="GROUP_1", source="SRC_1", hcpcs="E0000", vendor="VENDOR_X", state="ST", diag="", product="PRODUCT_A",
-        patient="17"):
+        patient="17", year=2025):
     return {"hcpcs_code": hcpcs, "vendor_name": vendor, "patient_name": patient, "product_description": product,
-            "product_group": group, "referral_source": source, "patient_state": state, "diag_code_1": diag}
+            "product_group": group, "referral_source": source, "patient_state": state, "diag_code_1": diag,
+            "date of referral": year}
+
+
+def problems(**change):
+    row = {"hcpcs_code": "E0000", "answer_vendor": "Vendor 01", "product_description": "PRODUCT_A",
+           "product_group": "GROUP_1", "referral_source": "Source A", "patient_state": "ST", "diag_code_1": ""}
+    return quality.problems({**row, **change})
 
 
 def test_patient_column_never_loaded(tmp_path):
@@ -22,13 +29,13 @@ def test_patient_column_never_loaded(tmp_path):
 
 
 def test_each_problem_counted():
-    assert quality.problems(ref()) == []
-    assert quality.problems(ref(diag="")) == []                      # blank diagnosis is allowed
-    assert quality.problems(ref(source="")) == ["No referral source"]
-    assert quality.problems(ref(hcpcs="99213")) == ["HCPCS code blank or invalid"]
-    assert quality.problems(ref(vendor="")) == ["No vendor assigned"]
-    assert quality.problems(ref(group="")) == ["No service type"]
-    assert quality.problems(ref(diag="ABC")) == ["Diagnosis code not valid"]
+    assert problems() == []
+    assert problems(diag_code_1="") == []                      # blank diagnosis is allowed
+    assert problems(referral_source="") == ["No referral source"]
+    assert problems(hcpcs_code="99213") == ["HCPCS code blank or invalid"]
+    assert problems(answer_vendor="") == ["No vendor recorded"]
+    assert problems(product_group="") == ["No service type"]
+    assert problems(diag_code_1="ABC") == ["Diagnosis code not valid"]
 
 
 def test_privacy_blanked_values_are_not_counted_as_missing(tmp_path):
@@ -52,5 +59,5 @@ def test_printed_report_has_totals_only(tmp_path, capsys):
     rows = [ref(group="BIG")] * 25
     quality_report.main(["--input", str(make(rows, tmp_path / "r.xlsx")), "--output", str(tmp_path / "q.json")])
     out = capsys.readouterr().out
-    for forbidden in ("VENDOR_X", "PRODUCT_A", "SRC_1", "E0000", "17"):
+    for forbidden in ("VENDOR_X", "PRODUCT_A", "SRC_1", "E0000", "PATIENT"):
         assert forbidden not in out

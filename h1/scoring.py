@@ -1,11 +1,11 @@
-"""Fair scoring: learn from 2024-2025, score on 2026 only. Aggregate counts only."""
+"""Fair scoring: learn from 2025, score on 2026 only. Aggregate counts only."""
 
 from collections import defaultdict
 
 from h1.suggest import Baseline, Suggester
 from h1.validate import find_issues
 
-TRAIN_YEARS = (2024, 2025)
+TRAIN_YEARS = (2025,)
 TEST_YEAR = 2026
 
 

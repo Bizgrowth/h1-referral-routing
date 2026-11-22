@@ -1,7 +1,7 @@
-"""Load a referral export, keeping only the allowlisted columns.
+"""Load the referral export (data/Referrals-v4.xlsx), keeping only the allowlisted columns.
 
-Non-allowlisted columns are never loaded: only the header row is read to name them,
-then the file is read again with just the allowed columns.
+Non-allowlisted columns (such as patient_name) are never loaded: only the header row is read
+to name them, then the file is read again with just the allowed columns.
 """
 
 from dataclasses import dataclass
@@ -12,15 +12,15 @@ import pandas as pd
 
 from h1 import scrub
 
-ALLOWED = ["insurance_company_city", "referral_source", "Expr1002", "product_group", "quantity",
-           "vendor_name", "hcpcs_code", "DATE", "diag_code_2", "diag_code_4", "product_description"]
-TEXT_FIELDS = ["insurance_company_city", "referral_source", "product_name", "product_group",
-               "product_description"]
+YEAR_COLUMN = "date of referral"
+ALLOWED = ["hcpcs_code", "vendor_name", "product_description", "product_group", "referral_source",
+           "patient_state", "diag_code_1", YEAR_COLUMN]
+TEXT_FIELDS = ["referral_source", "product_group", "product_description", "patient_state"]
 FORBIDDEN = re.compile(
     r"patient|claimant|first_?name|last_?name|^f_?name$|^l_?name$|^name$|adjuster|"
     r"order_?(no|num|number|id)|ssn|social_?sec|zip|postal|address|addr|phone|mobile|fax|"
     r"e_?mail|dob|birth|claim|member", re.IGNORECASE)
-INPUT_NAMES = ["Referrals.xlsx", "Referrals.txt", "Referrals.tsv"]
+INPUT_NAMES = ["Referrals-v4.xlsx", "Referrals-v4.txt", "Referrals-v4.tsv"]
 
 
 @dataclass
@@ -28,7 +28,7 @@ class ImportResult:
     rows: pd.DataFrame        # answer key is in the "answer_vendor" column
     messages: list            # safe to print: column names and counts only, never values
     forbidden_columns: list
-    scrubbed_values: int
+    scrubbed_values: int      # rows with a value blanked by the privacy filter
     rejected_dates: int
 
 
@@ -97,7 +97,7 @@ def load(path) -> ImportResult:
 
     messages = []
     if forbidden:
-        messages.append("WARNING: dropped identifier columns: " + ", ".join(forbidden))
+        messages.append("Dropped identifier column(s), never loaded: " + ", ".join(forbidden))
     if other:
         messages.append(f"Dropped {len(other)} other non-allowlisted column(s): " + ", ".join(other))
 
@@ -109,32 +109,28 @@ def load(path) -> ImportResult:
     df = raw[ALLOWED].map(_text)
     df.insert(0, "row_id", range(1, len(df) + 1))
 
-    # Expr1002 is an Access alias for the product name.
-    if (df["Expr1002"] == df["product_description"]).all():
-        df = df.drop(columns="Expr1002")
-        messages.append("Expr1002 matches product_description on every row; dropped.")
-    else:
-        df = df.rename(columns={"Expr1002": "product_name"})
-
-    # DATE must already be a 4-digit year.
-    years = df["DATE"].map(_year)
+    # The referral date must already be a 4-digit year.
+    years = df[YEAR_COLUMN].map(_year)
     rejected = int(years.isna().sum())
     if rejected:
-        messages.append(f"Rejected {rejected} row(s) whose DATE is not a 4-digit year.")
+        messages.append(f"Rejected {rejected} row(s) whose {YEAR_COLUMN} is not a 4-digit year.")
     df = df[years.notna()].copy()
     df["year"] = years[years.notna()].astype(int)
-    df = df.drop(columns="DATE")
+    df = df.drop(columns=YEAR_COLUMN)
 
-    scrubbed = 0
+    # Values blanked by the privacy filter are recorded in _privacy so they are not reported as missing.
+    df["_privacy"] = ""
     df["product_description"] = df["product_description"].map(scrub.strip_description)
-    for col in (c for c in TEXT_FIELDS if c in df.columns):
+    for col in TEXT_FIELDS:
         hits = df[col].map(scrub.has_identifier)
-        scrubbed += int(hits.sum())
         df.loc[hits, col] = ""
+        df.loc[hits, "_privacy"] += col + ","
+    scrubbed = int((df["_privacy"] != "").sum())
     if scrubbed:
-        messages.append(f"Blanked {scrubbed} value(s) matching an SSN, phone, email or ZIP pattern.")
+        messages.append(f"Blanked a value matching an SSN, phone, email or ZIP pattern on {scrubbed} row(s) "
+                        "(not counted as missing).")
 
-    for col in ("hcpcs_code", "diag_code_2", "diag_code_4"):
+    for col in ("hcpcs_code", "diag_code_1"):
         df[col] = df[col].str.upper()
     sources = _labels(df["referral_source"], lambda i: "Source " + _letters(i))
     vendors = _labels(df["vendor_name"], lambda i: f"Vendor {i + 1:02d}")

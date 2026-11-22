@@ -22,11 +22,11 @@ h1{font-size:60px;font-weight:800;letter-spacing:-.015em}
 <p class="sub">Everything runs on the client's own computer. Nothing is assigned without a person.</p>
 <div class="flow">
   <div class="step"><div class="n">1</div><div><div class="t">Read the referral export</div><div class="d">The spreadsheet the team already uses. No new system to fill in.</div></div><div class="chip">Spreadsheet in</div></div>
-  <div class="step"><div class="n">2</div><div><div class="t">Keep only approved fields</div><div class="d">11 allowed columns. Patient, claim and contact columns are dropped; SSN, phone, email and ZIP values blanked.</div></div><div class="chip ok">Privacy filter</div></div>
-  <div class="step"><div class="n">3</div><div><div class="t">Flag missing or invalid details</div><div class="d">Referral source, product, service type, HCPCS code, quantity, carrier city.</div></div><div class="chip warn">Caught before routing</div></div>
-  <div class="step"><div class="n">4</div><div><div class="t">Suggest up to 3 vendors</div><div class="d">Ranked from the company's own past referrals, each with a plain reason.</div></div><div class="chip">"Used 4× in this city"</div></div>
+  <div class="step"><div class="n">2</div><div><div class="t">Keep only approved fields</div><div class="d">8 approved columns. The patient column is never loaded; SSN, phone, email and ZIP values are blanked.</div></div><div class="chip ok">Privacy filter</div></div>
+  <div class="step"><div class="n">3</div><div><div class="t">Flag missing or invalid details</div><div class="d">Referral source, product, service type, HCPCS code, state, diagnosis code format.</div></div><div class="chip warn">Caught before routing</div></div>
+  <div class="step"><div class="n">4</div><div><div class="t">Suggest up to 3 vendors</div><div class="d">Ranked from the company's own past referrals, each with a plain reason.</div></div><div class="chip">"Used 4× in this state"</div></div>
   <div class="step person"><div class="n">5</div><div><div class="t">Coordinator decides</div><div class="d">Approve, change vendor or reject. Each decision is logged with the time it took.</div></div><div class="chip ok">Human approval</div></div>
-  <div class="step"><div class="n">6</div><div><div class="t">Report four totals</div><div class="d">Missing-info rate, shortlist accuracy, review time, and the baseline. Never individual records.</div></div><div class="chip">Totals out</div></div>
+  <div class="step"><div class="n">6</div><div><div class="t">Report by type of service</div><div class="d">Where intake breaks down, what was missing, and review time. Never individual records.</div></div><div class="chip">Totals out</div></div>
 </div>
 <div class="foot"><span><b>No</b> cloud AI</span><span><b>No</b> tracking</span><span><b>No</b> hosted database</span><span><b>No</b> data in the code repository</span></div>
 </body></html>

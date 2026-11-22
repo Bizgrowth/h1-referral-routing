@@ -14,18 +14,19 @@ A local-only MVP that takes de-identified workers' comp DME and supply referrals
 python -m venv .venv && .venv\Scripts\python -m pip install -r requirements.txt
 git config core.hooksPath .githooks              # once per clone: blocks data files from commits
 .venv\Scripts\python -m pytest                   # all tests
-.venv\Scripts\python scripts\score.py            # reads data\Referrals.xlsx -> output\scoring.json
+.venv\Scripts\python scripts\quality_report.py   # intake totals by type of service -> output\quality.json
 .venv\Scripts\streamlit run app.py               # coordinator screen at http://localhost:8501
 .venv\Scripts\python scripts\totals.py --baseline-seconds <manual median>
 ```
 
 ## Current Status
-MVP built 2026-11-21; 60 tests pass; checked end to end on synthetic fixtures only.
-Real export loaded 2026-11-21 (74 rows, `data/Referrals.xlsx`, gitignored). Manual baseline: **165 s** per referral
-(2.75 min, given by Daniel). Review time with the tool: not yet logged. Run totals with `--baseline-seconds 165`.
-Public totals need the data owner's written OK before pushing.
-Full export (2,836 rows, 8 columns, no year) at `data/Referrals-v3.xlsx`: run `scripts\quality_report.py` for the
-intake-quality totals by type of service (app tab "Intake quality"). `Referrals-v2-filtered.xlsx` is a filtered subset; unused.
+2026-11-21: the app runs on ONE sheet, `data/Referrals-v4.xlsx` (2,836 referrals, 2025: 1,860, 2026: 976; gitignored).
+Allowlist = the 8 v4 columns; `patient_name` is never loaded. 69 tests pass. Public totals approved by Daniel.
+Published results: intake quality by type of service (1,091 of 2,836 = 38% flagged; by-field counts as the supporting line).
+Vendor accuracy is NOT published: in v4 the year follows row order, every HCPCS code appears exactly twice (once per year)
+and 427 2026 rows copy a 2025 row, so a 2025->2026 test is not fair. `scripts\score.py`/`totals.py` still work for a
+client export with real referral dates. Manual baseline **165 s** (2.75 min); time with the tool not yet logged.
+Older sheets (`Referrals.xlsx`, `Referrals-v2-filtered.xlsx`, `Referrals-v3.xlsx`) are no longer used.
 Plan and assumptions: `docs/plans/2026-11-20-h1-build-plan.md`. Spec: `docs/plans/claude-code-build-brief.md`.
 Portfolio images: `docs/01-cover.png`, `docs/04-workflow.png` (sources in `docs/images-src/`; re-render with headless Edge at 1600x1200).
 
