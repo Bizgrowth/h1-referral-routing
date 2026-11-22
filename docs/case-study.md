@@ -44,7 +44,14 @@ Equipment and supply referrals arrive with gaps. Coordinators chase missing deta
 
 **What it means for operations:** problems cluster by type of service. Fixing how nursing, respiratory and DME referrals are taken in would remove a large share of the rework. That's a process fix to make before automating anything.
 
-**Vendor shortlist:** every 2026 referral in the review queue (976) gets up to 3 suggested vendors. No accuracy percentage is published: in this export, the 2026 rows repeat many 2025 rows, so a fair before-and-after test isn't possible. It will be measured on a client's export with real referral dates.
+**Vendor shortlist:** learned only from 2025 referrals, then tested on the 970 referrals from 2026 that had a recorded vendor. The top suggestion matched the vendor actually used for **940 of 970 (97%)**, compared with 754 of 970 (78%) for the simple rule "use the most common vendor for this product".
+
+| 2026 referrals | Tool, top pick | Simple rule |
+|---|---|---|
+| Product seen in 2025 (769) | 754 | 754 |
+| New product or no product listed (201) | 186 | 0 (no history to use) |
+
+The whole gain comes from new products: when a product had no history, the tool fell back on the HCPCS code and service type. Where a product had more than one past vendor (20 referrals), the top pick tied the simple rule at 9 of 20, and the right vendor was in the top 3 for 19 of 20, which is why a coordinator still makes the final choice.
 
 **Review time per referral:** 2.75 minutes by hand today. *Time with the tool is being measured; added once timed, never estimated.*
 
