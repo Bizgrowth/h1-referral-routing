@@ -4,6 +4,8 @@
 
 **Referral intake checks and vendor routing for workers' comp, with a coordinator approving every match.**
 
+**Live demo:** https://referrals.aiopsexpert.com (a static page built from the scrubbed referral extract; the full app runs locally with Python)
+
 ## The problem
 Durable medical equipment and supply referrals pile up. Required details go missing and stall cases, and coordinators pick vendors from memory or spreadsheets. Each delay pushes back care for the injured worker.
 

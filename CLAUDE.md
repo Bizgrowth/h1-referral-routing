@@ -41,6 +41,8 @@ Portfolio images: `docs/01-cover.png`, `docs/04-workflow.png` (sources in `docs/
 - Never commit .env or credentials
 - Read CLAUDE.md before every session
 - This repo will be public. Never commit referral data, exports, logs or output (`data/`, `output/`, `logs/`, `*.csv`, `*.xlsx`, `*.accdb`, `*.mdb`, `*.db`)
+  Exception approved by Daniel (2026-11-22): `docs/index.html` embeds the scrubbed v4 review queue (masked labels, no answer key) for the static demo; rebuild with `scripts/build_demo_page.py`. The spreadsheet itself stays out of the repo.
+- Static demo page: `docs/` (GitHub Pages from main /docs, custom domain in `docs/CNAME`)
 - No data leaves this machine: no cloud AI API, no telemetry, no hosted database
 - No contact details, email, phone or booking links anywhere in the repo
 - Never estimate results; only report measured totals

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>H1 Referral Routing</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Referral intake checks and vendor routing for workers' comp, with a coordinator approving every match. Built on my company's records.">
+<style>
+:root{--ink:#14213D;--mute:#5B6B80;--line:#CBD5E1;--soft:#E3E9F0;--bg:#EDF1F6;--card:#fff;--ok:#17694A;--warn:#9A4A09;--warnbg:#FDF3E7;--bar:#B4560B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
+.label{background:var(--ink);color:#F4F7FA;padding:11px 16px;border-radius:0 0 6px 6px;font-size:.92rem}
+.label b{font-weight:700}
+header{padding:22px 0 6px}
+h1{margin:0;font-size:1.9rem;letter-spacing:-.02em}
+.lede{color:var(--mute);margin:4px 0 0;max-width:62ch}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 20px;overflow-x:auto}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;color:var(--mute);cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--ok);border-bottom-color:var(--ok);font-weight:600}
+nav button:focus-visible,.btn:focus-visible,select:focus-visible{outline:3px solid #7aa7d9;outline-offset:2px}
+section[hidden]{display:none}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px 18px}
+.stat b{display:block;font-size:1.9rem;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{color:var(--mute);font-size:.88rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.ptitle{font-weight:700;margin:0 0 8px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem}
+th,td{padding:10px 14px;border-top:1px solid var(--soft);text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{border-top:0;color:var(--mute);font-weight:600;font-size:.84rem}
+td.miss,th.miss{text-align:left;color:var(--mute);font-size:.82rem}
+.qbar{height:10px;background:var(--soft);border-radius:5px;min-width:80px}
+.qbar span{display:block;height:100%;background:var(--bar);border-radius:5px}
+.fine{color:var(--mute);font-size:.84rem;margin-top:14px}
+.ref-head{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin:0 0 14px}
+.ref-head h2{margin:0;font-size:2rem;letter-spacing:-.02em}
+.ref-meta{color:var(--mute);font-size:.95rem}
+.cols{display:grid;grid-template-columns:1.05fr 1fr;gap:28px}
+.slip-row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:10px 18px;border-top:1px solid var(--soft)}
+.slip-row:first-child{border-top:0}
+.slip-label{color:var(--mute);font-size:.86rem}
+.slip-value{font-weight:600;overflow-wrap:anywhere}
+.slip-value.empty{color:#64748B;font-weight:400}
+.slip-row.flagged{background:var(--warnbg);box-shadow:inset 4px 0 0 var(--bar)}
+.flag-note{display:block;color:var(--warn);font-size:.82rem;font-weight:600}
+.summary{font-size:.9rem;font-weight:600;margin:10px 2px 0}.summary.ok{color:var(--ok)}.summary.warn{color:var(--warn)}
+.vendor{display:grid;grid-template-columns:2rem 1fr;gap:10px;padding:15px 18px;border-top:1px solid var(--soft)}
+.vendor:first-child{border-top:0}.vendor.top{background:#EEF7F2}
+.rank{font-size:1.45rem;font-weight:700;color:#7a889a;line-height:1.1}.vendor.top .rank{color:var(--ok)}
+.vname{font-weight:700}.reason{color:var(--mute);font-size:.86rem;margin:2px 0 9px}
+.meter{height:6px;background:var(--soft);border-radius:3px}.meter span{display:block;height:100%;background:var(--mute);border-radius:3px}
+.vendor.top .meter span{background:var(--ok)}
+.empty-card{padding:18px;color:var(--mute)}
+.decide{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:12px;align-items:end;margin-top:8px}
+.btn{font:inherit;padding:10px 14px;border-radius:6px;border:1px solid var(--line);background:#F4F6FA;color:var(--ink);cursor:pointer;width:100%}
+.btn.primary{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+label{display:block;font-size:.88rem;margin-bottom:4px}
+select{font:inherit;width:100%;padding:9px;border:1px solid var(--line);border-radius:6px;background:#fff;margin-bottom:8px}
+.shots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.shots figure{margin:0}.shots img{width:100%;height:auto;border:1px solid var(--line);border-radius:6px;display:block}
+.shots figcaption{color:var(--mute);font-size:.86rem;margin-top:6px}
+footer{color:var(--mute);font-size:.85rem;margin-top:28px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:760px){.stats,.cols,.shots{grid-template-columns:1fr}.slip-row{grid-template-columns:1fr;gap:2px}.decide{grid-template-columns:1fr}th,td{padding:8px 8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="label"><b>Built on my company's records</b> · de-identified, totals and masked labels only · static demo page, nothing is saved</div>
+<header>
+<h1>H1 Referral Routing</h1>
+<p class="lede">Referral intake checks and vendor routing for workers' comp. Every referral is checked against fixed intake rules, problems are grouped by type of service, and a coordinator approves, changes or rejects each suggested vendor.</p>
+</header>
+<nav role="tablist" aria-label="Demo screens">
+<button role="tab" aria-selected="true" data-tab="quality">Intake quality</button>
+<button role="tab" aria-selected="false" data-tab="queue">Review queue</button>
+<button role="tab" aria-selected="false" data-tab="results">Review time and results</button>
+<button role="tab" aria-selected="false" data-tab="screens">App screens</button>
+</nav>
+
+<section id="quality"></section>
+
+<section id="queue" hidden></section>
+
+<section id="results" hidden></section>
+
+<section id="screens" hidden>
+<p class="ptitle">Screens from the Python app</p>
+<p class="fine" style="margin-top:0">This page is a static version of the local Python and Streamlit app. These are screenshots of the app itself, running on the same records.</p>
+<div class="shots">
+<figure><img src="screens/01-cover.png" alt="Cover: 38 percent of referrals had a missing or invalid detail"><figcaption>Cover</figcaption></figure>
+<figure><img src="screens/02-screen.png" alt="Intake quality screen with totals by type of service"><figcaption>Intake quality</figcaption></figure>
+<figure><img src="screens/03-screen.png" alt="Review queue with flagged item, three suggested vendors and decision buttons"><figcaption>Review queue</figcaption></figure>
+<figure><img src="screens/04-screen.png" alt="Workflow from spreadsheet to coordinator decision"><figcaption>How a referral moves through it</figcaption></figure>
+<figure><img src="screens/05-screen.png" alt="Review time screen with median seconds and decision counts"><figcaption>Review time</figcaption></figure>
+</div>
+</section>
+
+<footer>
+Demo build on my company's records. Not built for a client. Runs fully on one computer in its real form: no cloud AI, no tracking, no hosted database. This page loads one scrubbed extract and saves nothing.
+</footer>
+</div>
+
+<script>
+const D = /*DATA*/null;
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+const pct = (a, b) => Math.round(100 * a / b);
+const fmt = (n) => n.toLocaleString("en-US");
+
+// ---------- tabs
+document.querySelectorAll("nav button").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll("nav button").forEach((x) => x.setAttribute("aria-selected", x === b));
+  ["quality", "queue", "results", "screens"].forEach((id) => { $(id).hidden = id !== b.dataset.tab; });
+}));
+
+// ---------- intake quality
+(function () {
+  const q = D.quality, root = $("quality");
+  const [topField, topN] = Object.entries(q.by_field).sort((a, b) => b[1] - a[1])[0];
+  const stats = el("div", "stats");
+  [[fmt(q.referrals), "referrals checked against the intake rules"],
+   [fmt(q.with_problem), `had a missing or invalid detail (${pct(q.with_problem, q.referrals)}%), all flagged before routing`],
+   [fmt(topN), `most common problem: ${topField.toLowerCase()}`]].forEach(([n, t]) => {
+    const s = el("div", "stat"); s.append(el("b", "", n), el("span", "", t)); stats.append(s);
+  });
+  root.append(stats, el("p", "ptitle", "Referrals with a problem, by type of service"));
+  const card = el("div", "card"), t = el("table");
+  t.innerHTML = "<thead><tr><th>Type of service</th><th></th><th>Referrals</th><th>Rate</th><th class='miss'>Main issue</th></tr></thead>";
+  const tb = el("tbody");
+  q.by_service_type.forEach((g) => {
+    const [name, n] = Object.entries(g.fields).sort((a, b) => b[1] - a[1])[0] || ["", 0];
+    const tr = el("tr");
+    const bar = el("div", "qbar"), fill = el("span"); fill.style.width = pct(g.with_problem, g.referrals) + "%"; bar.append(fill);
+    const c2 = el("td"); c2.append(bar);
+    tr.append(el("td", "", g.service_type), c2, el("td", "", `${g.with_problem} of ${g.referrals}`),
+      el("td", "", pct(g.with_problem, g.referrals) + "%"), el("td", "miss", n ? "mostly " + name.toLowerCase() : ""));
+    tb.append(tr);
+  });
+  t.append(tb); card.append(t); root.append(card);
+  root.append(el("p", "ptitle", "What was missing or invalid"));
+  const card2 = el("div", "card"), t2 = el("table");
+  t2.innerHTML = "<thead><tr><th>Problem</th><th>Referrals</th></tr></thead>";
+  const tb2 = el("tbody");
+  Object.entries(q.by_field).forEach(([k, v]) => { const tr = el("tr"); tr.append(el("td", "", k), el("td", "", fmt(v))); tb2.append(tr); });
+  t2.append(tb2); card2.append(t2); root.append(card2);
+  root.lastChild.style.marginBottom = "0";
+  root.append(el("p", "fine", `A referral can have more than one problem. ${q.privacy_blanked} values were removed by the privacy filter and are not counted as missing. Service types with fewer than 20 referrals are combined. Totals only.`));
+})();
+
+// ---------- review queue (decisions live only in this page's memory)
+const session = { decisions: [], index: 0, opened: performance.now() };
+function renderQueue() {
+  const root = $("queue"); root.replaceChildren();
+  const total = D.queue.length;
+  if (session.index >= total) { root.append(el("p", "summary ok", `All ${total} referrals reviewed in this visit.`)); return; }
+  const row = D.queue[session.index];
+  const flagged = Object.keys(row.flags);
+  const head = el("div", "ref-head");
+  head.append(el("h2", "", "Referral " + row.row_id),
+    el("span", "ref-meta", `Received ${row.year}. Number ${session.index + 1} of ${total} in this queue. ${session.decisions.length} decided in this visit, nothing is saved.`));
+  const cols = el("div", "cols");
+  const left = el("div"), right = el("div");
+  left.append(el("p", "ptitle", "Referral details"));
+  const slip = el("div", "card");
+  [["product_description", "Product"], ["product_group", "Service type"], ["hcpcs_code", "HCPCS code"],
+   ["diag_code_1", "Diagnosis code"], ["patient_state", "State"], ["referral_source", "Referral source"]].forEach(([f, label]) => {
+    const v = (row[f] || "").trim();
+    const r = el("div", "slip-row" + (row.flags[f] ? " flagged" : ""));
+    const shown = v || (f.startsWith("diag") ? "None given" : row.privacy.includes(f) ? "Removed by privacy filter" : "Blank");
+    const val = el("div", "slip-value" + (v ? "" : " empty"), shown);
+    if (row.flags[f]) val.append(el("span", "flag-note", row.flags[f]));
+    r.append(el("div", "slip-label", label), val); slip.append(r);
+  });
+  left.append(slip, el("p", "summary " + (flagged.length ? "warn" : "ok"),
+    flagged.length ? `${flagged.length} item${flagged.length > 1 ? "s" : ""} to fix before this referral can be routed.` : "All required details present."));
+  right.append(el("p", "ptitle", "Suggested vendors"));
+  const vcard = el("div", "card");
+  if (!row.suggestions.length) vcard.append(el("div", "empty-card", "No vendor history matches this referral. Assign a vendor below or reject it."));
+  const top = Math.max(1, ...row.suggestions.map((s) => s.count));
+  row.suggestions.forEach((s, i) => {
+    const v = el("div", "vendor" + (i === 0 ? " top" : "")), body = el("div"), meter = el("div", "meter"), fill = el("span");
+    fill.style.width = Math.max(6, 100 * s.count / top) + "%"; meter.append(fill);
+    body.append(el("div", "vname", s.vendor), el("div", "reason", s.reason), meter);
+    v.append(el("div", "rank", String(i + 1)), body); vcard.append(v);
+  });
+  right.append(vcard);
+  cols.append(left, right);
+  const decide = el("div", "decide");
+  const approve = el("button", "btn primary", row.suggestions.length ? "Approve " + row.suggestions[0].vendor : "Approve");
+  approve.disabled = !row.suggestions.length;
+  const mid = el("div"), lab = el("label", "", "Assign a different vendor"); lab.htmlFor = "vsel";
+  const sel = el("select"); sel.id = "vsel"; D.vendors.forEach((v) => sel.append(new Option(v, v)));
+  const change = el("button", "btn", "Change vendor");
+  mid.append(lab, sel, change);
+  const reject = el("button", "btn", "Reject");
+  const finish = (decision, vendor) => {
+    session.decisions.push({ decision, vendor, seconds: (performance.now() - session.opened) / 1000 });
+    session.index++; session.opened = performance.now(); renderQueue(); renderResults();
+  };
+  approve.onclick = () => finish("approve", row.suggestions[0].vendor);
+  change.onclick = () => finish("change", sel.value);
+  reject.onclick = () => finish("reject", null);
+  decide.append(approve, mid, reject);
+  root.append(head, cols, el("p", "ptitle", "Your decision"), decide,
+    el("p", "fine", "Nothing is assigned without a person. In this demo, decisions stay in this page and are gone when you reload."));
+}
+
+// ---------- review time and results
+function renderResults() {
+  const root = $("results"); root.replaceChildren();
+  const m = D.measured, c = D.match;
+  const stats = el("div", "stats");
+  [[`${m.median} s`, `median per referral in the Python app, ${m.n} logged decisions (${m.approve} approved, ${m.change} changed, ${m.reject} rejected). One reviewer, a small sample.`],
+   [`${m.manual} s`, "per referral by hand today (2.75 minutes)"],
+   [`${fmt(c.overall.tool_top1)} of ${fmt(c.overall.n)}`, `top vendor suggestion matched the vendor used, on 2026 referrals after learning from 2025 (${pct(c.overall.tool_top1, c.overall.n)}%)`]].forEach(([n, t]) => {
+    const s = el("div", "stat"); s.append(el("b", "", n), el("span", "", t)); stats.append(s);
+  });
+  root.append(stats);
+  root.append(el("p", "ptitle", "Vendor suggestion against a simple rule"));
+  const card = el("div", "card"), t = el("table");
+  t.innerHTML = "<thead><tr><th>2026 referrals</th><th>Tool, top pick</th><th>Simple rule</th></tr></thead>";
+  const tb = el("tbody");
+  [["All with a recorded vendor (" + fmt(c.overall.n) + ")", c.overall.tool_top1, c.overall.base_top1],
+   ["Product seen in 2025 (" + fmt(c.seen.n) + ")", c.seen.tool, c.seen.base],
+   ["New product or none listed (" + fmt(c.new.n) + ")", c.new.tool, c.new.base],
+   ["Products with more than one past vendor (" + c.multi.n + ")", c.multi.tool_top1, c.multi.base_top1]].forEach(([a, x, y]) => {
+    const tr = el("tr"); tr.append(el("td", "", a), el("td", "", fmt(x)), el("td", "", fmt(y))); tb.append(tr);
+  });
+  t.append(tb); card.append(t); root.append(card);
+  root.append(el("p", "fine", "The simple rule is \"use the most common vendor for this product\". The whole gain comes from new products, where the rule has no history. Where a product had history, the tool and the rule tie, and where a product had more than one past vendor the right vendor was in the top 3 for 19 of 20, which is why a coordinator still decides. Review time is measured, never estimated, and is not stated as time saved."));
+  if (session.decisions.length) {
+    const s = session.decisions.map((d) => d.seconds).sort((a, b) => a - b);
+    const med = s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
+    root.append(el("p", "fine", `Your visit: ${s.length} decision${s.length > 1 ? "s" : ""}, median ${med.toFixed(0)} s per referral. Not saved and not part of the results above.`));
+  }
+}
+renderQueue(); renderResults();
+</script>
+</body>
+</html>
