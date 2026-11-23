@@ -26,7 +26,7 @@ Published results: intake quality by type of service (1,091 of 2,836 = 38% flagg
 Vendor accuracy (scripts\score.py, train 2025 -> test 2026): top-1 940 of 970 vs baseline 754 of 970. Seen products tie
 (754/754 of 769); the gain is new/blank products (186 of 201, baseline 0). Multi-vendor products: 9 of 20 both, top-3 19 of 20.
 Rows are distinct referrals (distinct patient numbers); the export is sorted newest first. Manual baseline **165 s**
-(2.75 min); time with the tool not yet logged (old 74-row sheet decisions moved to logs\decisions-old-74-row-sheet.jsonl).
+(2.75 min); time with the tool: median 6 s over 12 logged decisions (11 approve, 1 reject) (old 74-row sheet decisions moved to logs\decisions-old-74-row-sheet.jsonl).
 Older sheets (`Referrals.xlsx`, `Referrals-v2-filtered.xlsx`, `Referrals-v3.xlsx`) are no longer used.
 Plan and assumptions: `docs/plans/2026-11-20-h1-build-plan.md`. Spec: `docs/plans/claude-code-build-brief.md`.
 Portfolio images: `docs/01-cover.png`, `docs/04-workflow.png` (sources in `docs/images-src/`; re-render with headless Edge at 1600x1200).

@@ -28,7 +28,7 @@ Tested on 2,836 de-identified referrals from my own company's records (2025–20
 - **Where it breaks down, by type of service:** nursing 73%, respiratory 45%, DME 44%, IV therapy 43%, orthotics 34%, down to hearing aids at 8%.
 - **What was missing:** no referral source on 770 referrals, no product on 126, no service type on 111, a blank or invalid HCPCS code on 108.
 - **Vendor shortlist:** learned from 2025, tested on 970 referrals from 2026. The top suggestion matched the vendor actually used for 940 (97%), vs 754 (78%) for "use the most common vendor for this product". The gain comes from new products, where the simple rule has no history.
-- **Review time per referral:** 2.75 minutes by hand today; time with the tool is being measured.
+- **Review time per referral:** median 6 seconds in the app across 12 logged reviews (11 approved, 1 rejected), against 2.75 minutes by hand today. Small sample, one reviewer, so treat it as a first measurement.
 
 ## What a client gets
 - Setup on the client's own export and intake rules

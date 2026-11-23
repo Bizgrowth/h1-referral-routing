@@ -1,7 +1,8 @@
 # Case study: Workers' Comp Referral Intake & Vendor Routing
 
 **Headline:** 38% of referrals arrived with a missing or invalid detail, and nursing referrals were the worst at 73%
-**Status:** MVP tested on 2,836 de-identified referrals (2025–2026) from my own company's records
+**Built on my company's records.** Working MVP tested on 2,836 de-identified referrals (2025–2026). Not built for a client.
+**Status:** runs locally on one computer; nothing is connected to outside systems
 
 ## The problem
 Equipment and supply referrals arrive with gaps. Coordinators chase missing details after the case has already stalled, and pick vendors from memory or old spreadsheets. Each delay pushes back the injured worker's equipment.
@@ -22,7 +23,7 @@ Equipment and supply referrals arrive with gaps. Coordinators chase missing deta
 - **Data can't leak into the code repository:** data files are blocked from every commit automatically.
 
 ## Results
-*Measured on de-identified referrals from my own company's records. Totals only; no individual referral is shown.*
+*Measured on de-identified referrals from my own company's records. Totals only, each with its sample size.*
 
 **Intake quality: 2,836 referrals checked.** 1,091 (38%) had at least one missing or invalid detail, and all 1,091 were flagged before routing.
 
@@ -53,10 +54,10 @@ Equipment and supply referrals arrive with gaps. Coordinators chase missing deta
 
 The whole gain comes from new products: when a product had no history, the tool fell back on the HCPCS code and service type. Where a product had more than one past vendor (20 referrals), the top pick tied the simple rule at 9 of 20, and the right vendor was in the top 3 for 19 of 20, which is why a coordinator still makes the final choice.
 
-**Review time per referral:** 2.75 minutes by hand today. *Time with the tool is being measured; added once timed, never estimated.*
-
-## Relevant experience
-[Daniel's own words on real referral-intake work, client unnamed]
+**Review time per referral:** median 6 seconds in the app across 12 logged reviews (11 approved, 1 rejected), against 2.75 minutes (165 seconds) by hand today. The first three reviews took 36, 29 and 22 seconds while learning the screen; the next nine took 4 to 7 seconds each. Small sample and one reviewer, so this is a first measurement, not a guarantee for another team.
 
 ## Who it's for
 Workers' comp managed care networks, TPAs, case management and DME intake teams.
+
+## What a pilot would add
+A connection to the client's own referral system instead of a spreadsheet export, a shared decision log across coordinators, and review of the suggestion rules with the people who place referrals. None of this is built.

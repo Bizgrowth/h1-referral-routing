@@ -107,6 +107,8 @@ total = len(test_rows)
 with st.sidebar:
     st.markdown("### H1 Referral Routing")
     st.markdown("**🔒 Local only · de-identified data**")
+    if not is_demo:
+        st.caption("Built on my company's records")
     st.caption("Runs entirely on this computer. No referral leaves it, and no vendor is assigned "
                "without a coordinator's decision.")
     st.progress((total - len(queue)) / total if total else 0, text=f"{total - len(queue)} of {total} reviewed")
@@ -116,6 +118,9 @@ with st.sidebar:
             log_path.unlink(missing_ok=True)
             st.rerun()
 
+if not is_demo:
+    st.markdown('<div class="demo-note"><b>Built on my company&#39;s records</b> · de-identified, totals only, '
+                'runs locally</div>', unsafe_allow_html=True)
 if is_demo:
     st.markdown('<div class="demo-note">Demo mode. These referrals are fictional, generated to show how the '
                 'screen works. Nothing here is a real case or a measured result.</div>', unsafe_allow_html=True)
@@ -150,7 +155,7 @@ def vendors_html(suggestions) -> str:
 
 with review_tab:
     if not queue:
-        st.success(f"All {total} referrals are reviewed. Open Results to see the totals.")
+        st.success(f"All {total} referrals are reviewed. Open the Review time tab to see the totals.")
     else:
         row = queue[0]
         row_id = int(row["row_id"])
@@ -211,7 +216,9 @@ with results_tab:
         '<span>approved top suggestion / changed vendor / rejected</span></div>'
         '</div>'
         '<p class="fine">Review time is measured from when a referral opens to the decision. Every decision is '
-        'saved on this computer only.' + (' Demo decisions are not results.' if is_demo else '') + '</p>',
+        'saved on this computer only.' + (' Demo decisions are not results.' if is_demo else '') +
+        (f' Small sample ({len(seconds)} decisions), one reviewer: a first measurement, not a guarantee.'
+         if seconds and not is_demo else '') + '</p>',
         unsafe_allow_html=True)
 
 with quality_tab:
